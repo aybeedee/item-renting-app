@@ -11,6 +11,8 @@ public class User {
     String profilePhotoUrl;
     String coverPhotoUrl;
 
+    public User() {}
+
     public User(String id, String fullName, String email, String contactNumber, String country, String city, String profilePhotoUrl, String coverPhotoUrl) {
         this.id = id;
         this.fullName = fullName;
@@ -21,8 +23,6 @@ public class User {
         this.profilePhotoUrl = profilePhotoUrl;
         this.coverPhotoUrl = coverPhotoUrl;
     }
-
-    public User() {}
 
     public String getId() {
         return id;

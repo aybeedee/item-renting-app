@@ -68,6 +68,7 @@
             android:layout_marginRight="15dp">
 
             <LinearLayout
+                android:id="@+id/uploadImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -97,6 +98,7 @@
             android:layout_weight="1">
 
             <LinearLayout
+                android:id="@+id/uploadVideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -135,6 +137,7 @@
         android:layout_marginRight="20dp" />
 
     <EditText
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Enter item name"
@@ -156,6 +159,7 @@
         android:layout_marginRight="20dp" />
 
     <EditText
+        android:id="@+id/rate"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Enter hourly rate"
@@ -178,6 +182,7 @@
         android:layout_marginRight="20dp" />
 
     <EditText
+        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:hint="Enter description"
@@ -235,6 +240,7 @@
         android:layout_marginBottom="20dp">
 
         <Button
+            android:id="@+id/post"
             android:text="Post Item"
             android:layout_width="match_parent"
             android:layout_height="60dp"

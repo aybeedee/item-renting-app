@@ -3,6 +3,7 @@ package com.abdullahumer.i200528;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -10,6 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +37,12 @@ public class HomeFragment extends Fragment {
     private String mParam2;
 
     CardView item_navigate;
+    TextView name;
+
+    String userId;
+
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -67,6 +82,31 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        name = view.findViewById(R.id.name);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        userId = mAuth.getUid().toString();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child("users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                if (!task.isSuccessful()) {
+
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+
+                else {
+                    User userObject = task.getResult().getValue(User.class);
+                    name.setText(userObject.getFullName());
+                }
+            }
+        });
 
         item_navigate = view.findViewById(R.id.card_item_navigate);
 
