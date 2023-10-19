@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,12 +48,16 @@ public class HomeFragment extends Fragment {
     TextView name;
     RecyclerView featuredRV;
     RecyclerView yourRV;
+    RecyclerView recentRV;
 
     FeaturedItemAdapter featuredAdapter;
     FeaturedItemAdapter yourAdapter;
+    GridAdapter recentAdapter;
 
     List<Item> featuredList;
     List<Item> yourList;
+    List<Item> recentList;
+
     String userId;
 
     FirebaseAuth mAuth;
@@ -100,6 +105,7 @@ public class HomeFragment extends Fragment {
         name = view.findViewById(R.id.name);
         featuredRV = view.findViewById(R.id.featuredRV);
         yourRV = view.findViewById(R.id.yourRV);
+        recentRV = view.findViewById(R.id.recentRV);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -125,20 +131,25 @@ public class HomeFragment extends Fragment {
         });
 
         featuredList = new ArrayList<>();
-        featuredAdapter = new FeaturedItemAdapter(featuredList, getContext());
+        featuredAdapter = new FeaturedItemAdapter(featuredList, getContext(), userId);
         featuredRV.setAdapter(featuredAdapter);
         RecyclerView.LayoutManager featuredLM = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         featuredRV.setLayoutManager(featuredLM);
 
         yourList = new ArrayList<>();
-        yourAdapter = new FeaturedItemAdapter(yourList, getContext());
+        yourAdapter = new FeaturedItemAdapter(yourList, getContext(), userId);
         yourRV.setAdapter(yourAdapter);
         RecyclerView.LayoutManager yourLM = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         yourRV.setLayoutManager(yourLM);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference itemsRef = database.getReference("items");
-        itemsRef.addChildEventListener(new ChildEventListener() {
+        recentList = new ArrayList<>();
+        recentAdapter = new GridAdapter(recentList, getContext());
+        recentRV.setAdapter(recentAdapter);
+        RecyclerView.LayoutManager recentLM = new GridLayoutManager(getContext(), 2);
+        recentRV.setLayoutManager(recentLM);
+
+        // for featured items and your items
+        mDatabase.child("items").addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -180,7 +191,55 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        return view;
+        // for recent items
+        mDatabase.child("userRecents").child(userId).addChildEventListener(new ChildEventListener() {
 
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                ItemReference itemRefObject = snapshot.getValue(ItemReference.class);
+
+                mDatabase.child("items").child(itemRefObject.getId()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            Item itemByRefObject = task.getResult().getValue(Item.class);
+
+                            recentList.add(itemByRefObject);
+                            recentAdapter.notifyDataSetChanged();
+                        }
+
+                        else {
+
+                            Log.e("DBErr", "Could not fetch item", task.getException());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return view;
     }
 }
