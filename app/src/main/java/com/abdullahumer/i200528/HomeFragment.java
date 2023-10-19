@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +19,14 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,9 +44,15 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    CardView item_navigate;
     TextView name;
+    RecyclerView featuredRV;
+    RecyclerView yourRV;
 
+    FeaturedItemAdapter featuredAdapter;
+    FeaturedItemAdapter yourAdapter;
+
+    List<Item> featuredList;
+    List<Item> yourList;
     String userId;
 
     FirebaseAuth mAuth;
@@ -84,6 +98,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         name = view.findViewById(R.id.name);
+        featuredRV = view.findViewById(R.id.featuredRV);
+        yourRV = view.findViewById(R.id.yourRV);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -108,13 +124,59 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        item_navigate = view.findViewById(R.id.card_item_navigate);
+        featuredList = new ArrayList<>();
+        featuredAdapter = new FeaturedItemAdapter(featuredList, getContext());
+        featuredRV.setAdapter(featuredAdapter);
+        RecyclerView.LayoutManager featuredLM = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        featuredRV.setLayoutManager(featuredLM);
 
-        item_navigate.setOnClickListener(new View.OnClickListener() {
+        yourList = new ArrayList<>();
+        yourAdapter = new FeaturedItemAdapter(yourList, getContext());
+        yourRV.setAdapter(yourAdapter);
+        RecyclerView.LayoutManager yourLM = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        yourRV.setLayoutManager(yourLM);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference itemsRef = database.getReference("items");
+        itemsRef.addChildEventListener(new ChildEventListener() {
+
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ItemDetails.class);
-                startActivity(intent);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                Item itemObject = snapshot.getValue(Item.class);
+
+                if (!itemObject.getOwner().equals(userId)) {
+                    Log.d("itemName-Featured", itemObject.getItemName());
+                    featuredList.add(itemObject);
+                    featuredAdapter.notifyDataSetChanged();
+                }
+
+                else {
+
+                    Log.d("itemName-Your", itemObject.getItemName());
+                    yourList.add(itemObject);
+                    yourAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 

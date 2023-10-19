@@ -61,7 +61,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/profile_header"
+        android:id="@+id/itemImg"
         android:layout_width="wrap_content"
         android:layout_height="350dp"
         android:src="@drawable/sole_f63_treadmill"
@@ -76,6 +76,7 @@
         android:paddingRight="20dp">
 
         <TextView
+            android:id="@+id/rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$12"
@@ -95,6 +96,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/itemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sole F63 Treadmill"
@@ -127,6 +129,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/city"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Islamabad"
@@ -136,6 +139,7 @@
             android:textColor="@color/primary_grey_6" />
 
         <TextView
+            android:id="@+id/date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="7th Mar, 2023"
@@ -147,6 +151,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
@@ -175,6 +180,7 @@
             android:layout_marginRight="15dp">
 
             <ImageView
+                android:id="@+id/ownerImg"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/chat_portrait_1" />
@@ -189,6 +195,7 @@
             android:layout_gravity="center_vertical">
 
             <TextView
+                android:id="@+id/ownerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Makenna Dias"
@@ -199,6 +206,7 @@
                 android:textColor="@color/primary_blue" />
 
             <TextView
+                android:id="@+id/ownerRentedCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="24 items rented"

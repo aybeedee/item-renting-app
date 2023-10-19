@@ -54,9 +54,9 @@ public class PostItem extends AppCompatActivity {
 
 //        Date date = Calendar.getInstance().getTime();
         Calendar calendar = Calendar.getInstance();
-        day = String.valueOf(calendar.get(Calendar.YEAR));
+        day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
         month = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH);
-        year = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        year = String.valueOf(calendar.get(Calendar.YEAR));
         imageUrl = "";
         videoUrl = "";
 
@@ -108,18 +108,36 @@ public class PostItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Item item = new Item(userId, name.getText().toString(), Double.parseDouble(rate.getText().toString()), description.getText().toString(), citySpinner.getSelectedItem().toString(), day, month, year, imageUrl, videoUrl);
+                String itemId = mDatabase.child("items").push().getKey();
 
-                mDatabase.child("items").push().setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {
+                Item item = new Item(itemId, userId, name.getText().toString(), Double.parseDouble(rate.getText().toString()), description.getText().toString(), citySpinner.getSelectedItem().toString(), day, month, year, imageUrl, videoUrl);
+
+                mDatabase.child("items").child(itemId).setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {
+
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
                         if (task.isSuccessful()) {
 
-                            Toast.makeText(PostItem.this, "Item Posted", Toast.LENGTH_LONG).show();
+                            mDatabase.child("userPosts").child(userId).child(itemId).child("id").setValue(itemId).addOnCompleteListener(new OnCompleteListener<Void>() {
 
-                            Intent intent = new Intent(PostItem.this, MainActivity.class);
-                            startActivity(intent);
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+
+                                        Toast.makeText(PostItem.this, "Item Posted", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(PostItem.this, MainActivity.class);
+                                        startActivity(intent);
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(PostItem.this, "Post Failed!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         }
 
                         else {

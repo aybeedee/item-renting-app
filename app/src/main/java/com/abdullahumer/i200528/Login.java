@@ -39,6 +39,7 @@ public class Login extends AppCompatActivity {
         login = findViewById(R.id.button_login);
 
         forgot_password.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Login.this, ForgotPassword.class);
@@ -47,6 +48,7 @@ public class Login extends AppCompatActivity {
         });
 
         sign_up.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Login.this, SignUp.class);

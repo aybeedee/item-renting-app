@@ -2,6 +2,7 @@ package com.abdullahumer.i200528;
 
 public class Item {
 
+    String itemId;
     String owner;
     String itemName;
     Double rate;
@@ -15,7 +16,8 @@ public class Item {
 
     public Item() {}
 
-    public Item(String owner, String itemName, Double rate, String description, String city, String day, String month, String year, String itemImageUrl, String itemVideoUrl) {
+    public Item(String itemId, String owner, String itemName, Double rate, String description, String city, String day, String month, String year, String itemImageUrl, String itemVideoUrl) {
+        this.itemId = itemId;
         this.owner = owner;
         this.itemName = itemName;
         this.rate = rate;
@@ -26,6 +28,14 @@ public class Item {
         this.year = year;
         this.itemImageUrl = itemImageUrl;
         this.itemVideoUrl = itemVideoUrl;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public String getOwner() {
