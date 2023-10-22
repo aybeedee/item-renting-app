@@ -20,6 +20,7 @@
         android:layout_marginBottom="20dp"/>
 
     <EditText
+        android:id="@+id/searchInput"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Search"
@@ -27,7 +28,8 @@
         android:background="@drawable/input_box"
         android:drawableLeft="@drawable/ic_search"
         android:drawablePadding="5dp"
-        android:paddingLeft="15dp" />
+        android:paddingLeft="15dp"
+        android:imeOptions="actionSearch" />
 
     <TextView
         android:layout_width="match_parent"
@@ -40,7 +42,7 @@
         android:layout_marginBottom="20dp"/>
 
     <LinearLayout
-        android:id="@+id/linear_search_item"
+        android:id="@+id/inspironSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -49,79 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sole F63 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F61 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F62 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F60 Treadmill"
+            android:text="Inspiron"
             android:textSize="17sp"
             android:gravity="start"
             android:layout_weight="1"
@@ -147,6 +77,7 @@
         android:layout_marginBottom="20dp"/>
 
     <LinearLayout
+        android:id="@+id/clownSuitSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -155,7 +86,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sole F60 Treadmill"
+            android:text="Clown Suit"
             android:textSize="17sp"
             android:gravity="start"
             android:layout_weight="1"
@@ -171,6 +102,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ballSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -179,103 +111,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sole F61 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F62 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F63 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F64 Treadmill"
-            android:textSize="17sp"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:textColor="@color/primary_grey_7" />
-
-        <ImageView
-            android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_outward" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sole F65 Treadmill"
+            android:text="Ball"
             android:textSize="17sp"
             android:gravity="start"
             android:layout_weight="1"

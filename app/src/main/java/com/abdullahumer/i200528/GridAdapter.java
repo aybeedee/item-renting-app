@@ -54,19 +54,20 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
 
-                if (origin.equals("home")) {
+                Intent intent;
 
-                    Intent intent = new Intent(context, ItemDetails.class);
-                    intent.putExtra("itemId", itemId);
-                    context.startActivity(intent);
+                if (origin.equals("profile")) {
+
+                    intent = new Intent(context, EditItem.class);
                 }
 
-                else if (origin.equals("profile")) {
+                else {
 
-                    Intent intent = new Intent(context, EditItem.class);
-                    intent.putExtra("itemId", itemId);
-                    context.startActivity(intent);
+                    intent = new Intent(context, ItemDetails.class);
                 }
+
+                intent.putExtra("itemId", itemId);
+                context.startActivity(intent);
             }
         });
     }

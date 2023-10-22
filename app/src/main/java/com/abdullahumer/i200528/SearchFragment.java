@@ -6,10 +6,14 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +31,8 @@ public class SearchFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    LinearLayout search_item;
+    LinearLayout inspironSearch, clownSuitSearch, ballSearch;
+    EditText searchInput;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -68,12 +73,58 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        search_item = view.findViewById(R.id.linear_search_item);
+        searchInput = view.findViewById(R.id.searchInput);
+        inspironSearch = view.findViewById(R.id.inspironSearch);
+        clownSuitSearch = view.findViewById(R.id.clownSuitSearch);
+        ballSearch = view.findViewById(R.id.ballSearch);
 
-        search_item.setOnClickListener(new View.OnClickListener() {
+        searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
             @Override
-            public void onClick(View v) {
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+
+                    Intent intent = new Intent(getActivity(), SearchResults.class);
+                    intent.putExtra("searchInput", searchInput.getText().toString());
+                    startActivity(intent);
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        inspironSearch.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
                 Intent intent = new Intent(getActivity(), SearchResults.class);
+                intent.putExtra("searchInput", "Inspiron");
+                startActivity(intent);
+            }
+        });
+
+        clownSuitSearch.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getActivity(), SearchResults.class);
+                intent.putExtra("searchInput", "Clown Suit");
+                startActivity(intent);
+            }
+        });
+
+        ballSearch.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getActivity(), SearchResults.class);
+                intent.putExtra("searchInput", "Ball");
                 startActivity(intent);
             }
         });
