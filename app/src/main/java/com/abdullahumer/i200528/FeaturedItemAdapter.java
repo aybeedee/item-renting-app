@@ -81,6 +81,7 @@ public class FeaturedItemAdapter extends RecyclerView.Adapter<FeaturedItemAdapte
 
                                         if (task.isSuccessful()) {
 
+                                            Log.d("itemAdded", "item added to user recents");
                                             Intent intent = new Intent(context, ItemDetails.class);
                                             intent.putExtra("itemId", itemId);
                                             context.startActivity(intent);

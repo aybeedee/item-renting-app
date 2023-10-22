@@ -103,6 +103,7 @@ public class EditItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // remove item from all recents
                 mDatabase.child("userRecents").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -111,12 +112,13 @@ public class EditItem extends AppCompatActivity {
                             for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
 
                                 ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
-                                Log.i("itemSnapshot", itemSnapshot.toString());
-                                Log.i("itemRefObject", itemRefObject.getId());
+                                String indexedItemId = itemRefObject.getId();
+
+                                if (indexedItemId.equals(itemId)) {
+
+                                    itemSnapshot.getRef().removeValue();
+                                }
                             }
-
-//                            userSnapshot.getRef().removeValue();
-
                         }
                     }
 
@@ -125,20 +127,64 @@ public class EditItem extends AppCompatActivity {
 
                     }
                 });
-//                mDatabase.child("items").child(itemId).removeValue();
-//                mDatabase.child("userRecents").child(itemId).removeValue();
-//
-//                mDatabase.child("items").child(itemId).child("itemName").setValue(name.getText().toString());
-//                mDatabase.child("items").child(itemId).child("rate").setValue(Double.parseDouble(rate.getText().toString()));
-//                mDatabase.child("items").child(itemId).child("description").setValue(name.getText().toString());
-//                mDatabase.child("items").child(itemId).child("itemImageUrl").setValue(imageUrl);
-//                mDatabase.child("items").child(itemId).child("itemVideoUrl").setValue(videoUrl);
-//                mDatabase.child("items").child(itemId).child("city").setValue(citySpinner.getSelectedItem().toString());
-//
-//                Toast.makeText(EditItem.this, "Item Removed", Toast.LENGTH_LONG).show();
-//
-//                Intent intent = new Intent(EditItem.this, MainActivity.class);
-//                startActivity(intent);
+
+                // remove item from all rents
+                mDatabase.child("userRents").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                            for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
+
+                                ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
+                                String indexedItemId = itemRefObject.getId();
+
+                                if (indexedItemId.equals(itemId)) {
+
+                                    itemSnapshot.getRef().removeValue();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                // remove item from all posts
+                mDatabase.child("userPosts").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                            for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
+
+                                ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
+                                String indexedItemId = itemRefObject.getId();
+
+                                if (indexedItemId.equals(itemId)) {
+
+                                    itemSnapshot.getRef().removeValue();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                // remove from items
+                mDatabase.child("items").child(itemId).removeValue();
+
+                Toast.makeText(EditItem.this, "Item Removed", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(EditItem.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
