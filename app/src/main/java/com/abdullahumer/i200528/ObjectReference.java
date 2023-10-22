@@ -1,12 +1,12 @@
 package com.abdullahumer.i200528;
 
-public class ItemReference {
+public class ObjectReference {
 
     String id;
 
-    public ItemReference() {}
+    public ObjectReference() {}
 
-    public ItemReference(String id) {
+    public ObjectReference(String id) {
         this.id = id;
     }
 

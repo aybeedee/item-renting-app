@@ -33,8 +33,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class EditItem extends AppCompatActivity {
 
@@ -111,7 +109,7 @@ public class EditItem extends AppCompatActivity {
 
                             for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
 
-                                ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
+                                ObjectReference itemRefObject = itemSnapshot.getValue(ObjectReference.class);
                                 String indexedItemId = itemRefObject.getId();
 
                                 if (indexedItemId.equals(itemId)) {
@@ -136,7 +134,7 @@ public class EditItem extends AppCompatActivity {
 
                             for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
 
-                                ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
+                                ObjectReference itemRefObject = itemSnapshot.getValue(ObjectReference.class);
                                 String indexedItemId = itemRefObject.getId();
 
                                 if (indexedItemId.equals(itemId)) {
@@ -161,7 +159,7 @@ public class EditItem extends AppCompatActivity {
 
                             for (DataSnapshot itemSnapshot : userSnapshot.getChildren()) {
 
-                                ItemReference itemRefObject = itemSnapshot.getValue(ItemReference.class);
+                                ObjectReference itemRefObject = itemSnapshot.getValue(ObjectReference.class);
                                 String indexedItemId = itemRefObject.getId();
 
                                 if (indexedItemId.equals(itemId)) {

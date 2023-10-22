@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +44,7 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    TextView name;
+    TextView name, viewRequests;
     RecyclerView featuredRV;
     RecyclerView yourRV;
     RecyclerView recentRV;
@@ -103,9 +102,20 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         name = view.findViewById(R.id.name);
+        viewRequests = view.findViewById(R.id.viewRequests);
         featuredRV = view.findViewById(R.id.featuredRV);
         yourRV = view.findViewById(R.id.yourRV);
         recentRV = view.findViewById(R.id.recentRV);
+
+        viewRequests.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(), RentRequests.class);
+                startActivity(intent);
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -197,7 +207,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                ItemReference itemRefObject = snapshot.getValue(ItemReference.class);
+                ObjectReference itemRefObject = snapshot.getValue(ObjectReference.class);
 
                 mDatabase.child("items").child(itemRefObject.getId()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override

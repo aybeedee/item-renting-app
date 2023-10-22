@@ -26,7 +26,7 @@
             android:paddingRight="20dp">
 
             <ImageView
-                android:id="@+id/image_back_edit"
+                android:id="@+id/back"
                 android:layout_gravity="start|center_vertical"
                 android:contentDescription="@null"
                 android:layout_width="32dp"
@@ -51,5 +51,16 @@
             android:background="@color/view_line" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/requestsRV"/>
 
 </LinearLayout>
