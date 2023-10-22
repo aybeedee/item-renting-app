@@ -31,7 +31,7 @@ public class ItemDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
-    String userId, itemId, ownerId;
+    String userId, itemId, ownerId, dateString, cityString, rateString, itemNameString, imageUrlString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class ItemDetails extends AppCompatActivity {
         description = findViewById(R.id.description);
         ownerName = findViewById(R.id.ownerName);
         ownerRentedCount = findViewById(R.id.ownerRentedCount);
+        rent = findViewById(R.id.rent);
 
         back_item.setOnClickListener(new View.OnClickListener() {
 
@@ -86,14 +87,19 @@ public class ItemDetails extends AppCompatActivity {
                 if (task.isSuccessful()) {
 
                     Item itemObject = task.getResult().getValue(Item.class);
-                    Picasso.get().load(itemObject.getItemImageUrl()).into(itemImg);
-                    rate.setText("PKR " + itemObject.getRate().toString());
-                    itemName.setText(itemObject.getItemName());
-                    city.setText(itemObject.getCity());
-                    date.setText(itemObject.getDay() + " " + itemObject.getMonth() + ", " + itemObject.getYear());
-                    description.setText(itemObject.getDescription());
-
+                    rateString = itemObject.getRate().toString();
+                    itemNameString = itemObject.getItemName();
+                    cityString = itemObject.getCity();
+                    dateString = (itemObject.getDay() + " " + itemObject.getMonth() + ", " + itemObject.getYear());
+                    imageUrlString = itemObject.getItemImageUrl();
                     ownerId = itemObject.getOwner();
+
+                    Picasso.get().load(imageUrlString).into(itemImg);
+                    rate.setText("PKR " + rateString);
+                    itemName.setText(itemNameString);
+                    city.setText(cityString);
+                    date.setText(dateString);
+                    description.setText(itemObject.getDescription());
 
                     mDatabase.child("users").child(ownerId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
 
@@ -153,44 +159,16 @@ public class ItemDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String requestID = mDatabase.child("requests").push().getKey();
-
-                Request request = new Request(requestID, itemId, userId);
-
-                mDatabase.child("requests").child(requestID).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        if (task.isSuccessful()) {
-
-                            mDatabase.child("userRequests").child(ownerId).child(requestID).child("id").setValue(requestID).addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    if (task.isSuccessful()) {
-
-                                        Toast.makeText(ItemDetails.this, "Rent Request Sent", Toast.LENGTH_LONG).show();
-
-                                        Intent intent = new Intent(ItemDetails.this, MainActivity.class);
-                                        startActivity(intent);
-                                    }
-
-                                    else {
-
-                                        Toast.makeText(ItemDetails.this, "Rent Request Failed!", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        }
-
-                        else {
-
-                            Toast.makeText(ItemDetails.this, "Rent Request Failed!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                Intent intent = new Intent(ItemDetails.this, RentItem.class);
+                intent.putExtra("itemId", itemId);
+                intent.putExtra("customerId", userId);
+                intent.putExtra("ownerId", ownerId);
+                intent.putExtra("rate", rateString);
+                intent.putExtra("itemName", itemNameString);
+                intent.putExtra("city", cityString);
+                intent.putExtra("date", dateString);
+                intent.putExtra("imageUrl", imageUrlString);
+                startActivity(intent);
             }
         });
     }

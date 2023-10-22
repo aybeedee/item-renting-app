@@ -5,13 +5,23 @@ public class Request {
     String requestId;
     String itemId;
     String customerId;
+    Double hours;
 
     public Request() {}
 
-    public Request(String requestId, String itemId, String customerId) {
+    public Request(String requestId, String itemId, String customerId, Double hours) {
         this.requestId = requestId;
         this.itemId = itemId;
         this.customerId = customerId;
+        this.hours = hours;
+    }
+
+    public Double getHours() {
+        return hours;
+    }
+
+    public void setHours(Double hours) {
+        this.hours = hours;
     }
 
     public String getRequestId() {
