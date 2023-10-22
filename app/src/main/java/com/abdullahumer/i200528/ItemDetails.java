@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,11 +26,12 @@ public class ItemDetails extends AppCompatActivity {
 
     ImageView back_item, itemImg, ownerImg;
     TextView report, itemName, rate, city, date, description, ownerName, ownerRentedCount;
+    Button rent;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
-    String userId, itemId;
+    String userId, itemId, ownerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,7 @@ public class ItemDetails extends AppCompatActivity {
                     date.setText(itemObject.getDay() + " " + itemObject.getMonth() + ", " + itemObject.getYear());
                     description.setText(itemObject.getDescription());
 
-                    String ownerId = itemObject.getOwner();
+                    ownerId = itemObject.getOwner();
 
                     mDatabase.child("users").child(ownerId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
 
@@ -143,6 +145,52 @@ public class ItemDetails extends AppCompatActivity {
 
                     Toast.makeText(ItemDetails.this, "Could not fetch item", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        rent.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                String requestID = mDatabase.child("requests").push().getKey();
+
+                Request request = new Request(requestID, itemId, userId);
+
+                mDatabase.child("requests").child(requestID).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+
+                            mDatabase.child("userRequests").child(ownerId).child(requestID).child("id").setValue(requestID).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+
+                                        Toast.makeText(ItemDetails.this, "Rent Request Sent", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(ItemDetails.this, MainActivity.class);
+                                        startActivity(intent);
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(ItemDetails.this, "Rent Request Failed!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+
+                        else {
+
+                            Toast.makeText(ItemDetails.this, "Rent Request Failed!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
     }
