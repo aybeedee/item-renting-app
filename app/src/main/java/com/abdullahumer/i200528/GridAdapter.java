@@ -21,11 +21,13 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MyViewHolder> 
 
     List<Item> gridList;
     Context context;
+    String origin;
 
-    public GridAdapter(List<Item> featuredList, Context context) {
+    public GridAdapter(List<Item> featuredList, Context context, String origin) {
 
         this.gridList = featuredList;
         this.context = context;
+        this.origin = origin;
     }
 
     @NonNull
@@ -52,9 +54,19 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(context, ItemDetails.class);
-                intent.putExtra("itemId", itemId);
-                context.startActivity(intent);
+                if (origin.equals("home")) {
+
+                    Intent intent = new Intent(context, ItemDetails.class);
+                    intent.putExtra("itemId", itemId);
+                    context.startActivity(intent);
+                }
+
+                else if (origin.equals("profile")) {
+
+                    Intent intent = new Intent(context, EditItem.class);
+                    intent.putExtra("itemId", itemId);
+                    context.startActivity(intent);
+                }
             }
         });
     }

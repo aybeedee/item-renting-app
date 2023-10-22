@@ -75,6 +75,7 @@ public class EditProfile extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mDatabase.child("users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
 
@@ -82,6 +83,7 @@ public class EditProfile extends AppCompatActivity {
 
                     Log.e("firebase", "Error getting data", task.getException());
                 }
+
                 else {
 
                     User userObject = task.getResult().getValue(User.class);
@@ -212,6 +214,7 @@ public class EditProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
         setResult(RESULT_CANCELED);
     }

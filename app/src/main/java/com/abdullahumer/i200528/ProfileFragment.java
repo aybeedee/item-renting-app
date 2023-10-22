@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +21,16 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,11 +50,19 @@ public class ProfileFragment extends Fragment {
 
     ImageView edit_nav, profilePhoto, coverPhoto;
     TextView logout, name, city, itemsPosted, itemsRented;
+    RecyclerView profileYourRV;
+    RecyclerView rentedRV;
+
+    GridAdapter profileYourAdapter;
+    FeaturedItemAdapter rentedAdapter;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
     String userId;
+    List<Item> profileYourList;
+    List<Item> rentedList;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -94,6 +110,8 @@ public class ProfileFragment extends Fragment {
         city = view.findViewById(R.id.city);
         itemsPosted = view.findViewById(R.id.itemsPosted);
         itemsRented = view.findViewById(R.id.itemsRented);
+        profileYourRV = view.findViewById(R.id.profileYourRV);
+        rentedRV = view.findViewById(R.id.rentedRV);
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid().toString();
@@ -165,6 +183,118 @@ public class ProfileFragment extends Fragment {
 
                     Log.e("DBErr", "Could not fetch user data", task.getException());
                 }
+            }
+        });
+
+        profileYourList = new ArrayList<>();
+        profileYourAdapter = new GridAdapter(profileYourList, getContext(), "profile");
+        profileYourRV.setAdapter(profileYourAdapter);
+        RecyclerView.LayoutManager profileYourLM = new GridLayoutManager(getContext(), 2);
+        profileYourRV.setLayoutManager(profileYourLM);
+
+        rentedList = new ArrayList<>();
+        rentedAdapter = new FeaturedItemAdapter(rentedList, getContext(), userId);
+        rentedRV.setAdapter(rentedAdapter);
+        RecyclerView.LayoutManager rentedLM = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rentedRV.setLayoutManager(rentedLM);
+
+        // for rented items
+        mDatabase.child("userRents").child(userId).addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                ObjectReference itemRefObject = snapshot.getValue(ObjectReference.class);
+
+                mDatabase.child("items").child(itemRefObject.getId()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            Item itemByRefObject = task.getResult().getValue(Item.class);
+
+                            rentedList.add(itemByRefObject);
+                            rentedAdapter.notifyDataSetChanged();
+                        }
+
+                        else {
+
+                            Log.e("DBErr", "Could not fetch item", task.getException());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // for recent items
+        mDatabase.child("userPosts").child(userId).addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                ObjectReference itemRefObject = snapshot.getValue(ObjectReference.class);
+
+                mDatabase.child("items").child(itemRefObject.getId()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            Item itemByRefObject = task.getResult().getValue(Item.class);
+
+                            profileYourList.add(itemByRefObject);
+                            profileYourAdapter.notifyDataSetChanged();
+                        }
+
+                        else {
+
+                            Log.e("DBErr", "Could not fetch item", task.getException());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 

@@ -118,7 +118,6 @@ public class HomeFragment extends Fragment {
         });
 
         mAuth = FirebaseAuth.getInstance();
-
         userId = mAuth.getUid().toString();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -153,7 +152,7 @@ public class HomeFragment extends Fragment {
         yourRV.setLayoutManager(yourLM);
 
         recentList = new ArrayList<>();
-        recentAdapter = new GridAdapter(recentList, getContext());
+        recentAdapter = new GridAdapter(recentList, getContext(), "home");
         recentRV.setAdapter(recentAdapter);
         RecyclerView.LayoutManager recentLM = new GridLayoutManager(getContext(), 2);
         recentRV.setLayoutManager(recentLM);
