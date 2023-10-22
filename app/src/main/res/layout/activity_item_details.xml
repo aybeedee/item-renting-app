@@ -62,7 +62,7 @@
 
     <ImageView
         android:id="@+id/itemImg"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="350dp"
         android:src="@drawable/sole_f63_treadmill"
         android:scaleType="fitXY"

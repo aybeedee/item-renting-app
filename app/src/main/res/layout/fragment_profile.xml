@@ -70,8 +70,8 @@
         android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/profile_header"
-            android:layout_width="wrap_content"
+            android:id="@+id/coverPhoto"
+            android:layout_width="match_parent"
             android:layout_height="100dp"
             android:src="@drawable/clouds"
             android:scaleType="fitXY" />
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_below="@id/profile_header"
+            android:layout_below="@id/coverPhoto"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="-48dp"
             android:layout_marginBottom="10dp">
@@ -96,6 +96,7 @@
                 android:layout_marginRight="15dp">
 
                 <ImageView
+                    android:id="@+id/profilePhoto"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:src="@drawable/chat_portrait_1" />
@@ -115,6 +116,7 @@
         android:layout_marginBottom="5dp">
 
         <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Abdullah"
@@ -148,6 +150,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/city"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Islamabad"
@@ -157,6 +160,7 @@
             android:textColor="@color/primary_grey_6" />
 
         <TextView
+            android:id="@+id/itemsPosted"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="18 items posted"
@@ -166,6 +170,7 @@
             android:textColor="@color/primary_grey_6" />
 
         <TextView
+            android:id="@+id/itemsRented"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="24 items rented"
