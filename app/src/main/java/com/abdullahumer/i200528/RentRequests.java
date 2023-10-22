@@ -46,14 +46,14 @@ public class RentRequests extends AppCompatActivity {
         back = findViewById(R.id.back);
         requestsRV = findViewById(R.id.requestsRV);
 
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getUid().toString();
+
         requestsList = new ArrayList<>();
-        requestAdapter = new RequestAdapter(requestsList, RentRequests.this);
+        requestAdapter = new RequestAdapter(requestsList, RentRequests.this, userId);
         requestsRV.setAdapter(requestAdapter);
         RecyclerView.LayoutManager requestsLM = new LinearLayoutManager(RentRequests.this);
         requestsRV.setLayoutManager(requestsLM);
-
-        mAuth = FirebaseAuth.getInstance();
-        userId = mAuth.getUid().toString();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 

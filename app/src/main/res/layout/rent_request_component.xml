@@ -90,6 +90,7 @@
             android:layout_gravity="center_vertical">
 
             <Button
+                android:id="@+id/accept"
                 android:text="Accept"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -101,6 +102,7 @@
                 android:stateListAnimator="@null" />
 
             <Button
+                android:id="@+id/reject"
                 android:text="Reject"
                 android:layout_weight="1"
                 android:layout_width="0dp"

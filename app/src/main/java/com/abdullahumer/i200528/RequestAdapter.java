@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +31,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
 
     List<Request> requestsList;
     Context context;
+    String userId;
 
-    public RequestAdapter(List<Request> requestsList, Context context) {
+    public RequestAdapter(List<Request> requestsList, Context context, String userId) {
 
         this.requestsList = requestsList;
         this.context = context;
+        this.userId = userId;
     }
 
     @NonNull
@@ -51,6 +54,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
         String itemId = requestsList.get(position).getItemId();
         String customerId = requestsList.get(position).getCustomerId();
         Double hours = requestsList.get(position).getHours();
+        String requestId = requestsList.get(position).getRequestId();
 
         holder.hours.setText(hours.toString() + " hrs");
 
@@ -92,67 +96,70 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
             }
         });
 
-//        holder.featuredItem.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//
-//                if (!userId.equals(ownerId)) {
-//
-//                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-//
-//                    mDatabase.child("userRecents").child(userId).child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
-//
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                            if (!snapshot.exists()) {
-//
-//                                mDatabase.child("userRecents").child(userId).child(itemId).child("id").setValue(itemId).addOnCompleteListener(new OnCompleteListener<Void>() {
-//
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//
-//                                        if (task.isSuccessful()) {
-//
-//                                            Log.d("itemAdded", "item added to user recents");
-//                                            Intent intent = new Intent(context, ItemDetails.class);
-//                                            intent.putExtra("itemId", itemId);
-//                                            context.startActivity(intent);
-//                                        }
-//
-//                                        else {
-//
-//                                            Log.d("DBErr", "failed to post to user recents");
-//                                        }
-//                                    }
-//                                });
-//                            }
-//
-//                            else {
-//
-//                                Intent intent = new Intent(context, ItemDetails.class);
-//                                intent.putExtra("itemId", itemId);
-//                                context.startActivity(intent);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                            Log.d("DBErr", "failed to fetch user recents");
-//                        }
-//                    });
-//                }
-//
-//                else {
-//
-//                    Intent intent = new Intent(context, EditItem.class);
-//                    intent.putExtra("itemId", itemId);
-//                    context.startActivity(intent);
-//                }
-//            }
-//        });
+        holder.accept.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                // remove request
+                mDatabase.child("userRequests").child(userId).child(requestId).removeValue();
+                mDatabase.child("requests").child(requestId).removeValue();
+
+                // add the item to the customer's rented list
+                mDatabase.child("userRents").child(customerId).child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if (!snapshot.exists()) {
+
+                            mDatabase.child("userRents").child(customerId).child(itemId).child("id").setValue(itemId).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+
+                                        Log.d("itemAdded", "item added to user rents");
+                                    }
+
+                                    else {
+
+                                        Log.d("DBErr", "failed to post to user rents");
+                                    }
+                                }
+                            });
+                        }
+
+                        else {
+
+                            Log.d("Exists", "User already has this item rented");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                        Log.d("DBErr", "failed to fetch user rents");
+                    }
+                });
+
+                Toast.makeText(context, "Request Accepted", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        holder.reject.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                // remove request
+                mDatabase.child("userRequests").child(userId).child(requestId).removeValue();
+                mDatabase.child("requests").child(requestId).removeValue();
+
+                Toast.makeText(context, "Request Rejected", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -164,6 +171,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView itemName, hours, customerName;
+        Button accept, reject;
 
         public MyViewHolder(@NonNull View itemView) {
 
@@ -171,6 +179,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
             itemName = itemView.findViewById(R.id.itemName);
             hours = itemView.findViewById(R.id.hours);
             customerName = itemView.findViewById(R.id.customerName);
+            accept = itemView.findViewById(R.id.accept);
+            reject = itemView.findViewById(R.id.reject);
         }
     }
 }
