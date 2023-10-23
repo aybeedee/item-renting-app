@@ -218,6 +218,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/message"
             android:layout_gravity="end|center_vertical"
             android:contentDescription="@null"
             android:layout_width="32dp"

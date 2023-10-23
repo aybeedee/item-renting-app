@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
 
 public class ItemDetails extends AppCompatActivity {
 
-    ImageView back_item, itemImg, ownerImg;
+    ImageView back_item, itemImg, ownerImg, message;
     TextView report, itemName, rate, city, date, description, ownerName, ownerRentedCount;
     Button rent;
 
@@ -43,6 +43,7 @@ public class ItemDetails extends AppCompatActivity {
         report = findViewById(R.id.text_report);
         itemImg = findViewById(R.id.itemImg);
         ownerImg = findViewById(R.id.ownerImg);
+        message = findViewById(R.id.message);
         itemName = findViewById(R.id.itemName);
         rate = findViewById(R.id.rate);
         city = findViewById(R.id.city);
@@ -151,6 +152,76 @@ public class ItemDetails extends AppCompatActivity {
 
                     Toast.makeText(ItemDetails.this, "Could not fetch item", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        message.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //create a chat in chats
+                // get key by pushing for chatId
+                //add the chatId to both users in userChats
+
+                String chatId = mDatabase.child("chats").push().getKey();
+
+                Chat chat = new Chat(chatId, userId, ownerId, "");
+
+                mDatabase.child("chats").child(chatId).setValue(chat).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+
+                            mDatabase.child("userChats").child(userId).child(chatId).child("id").setValue(chatId).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+
+                                        Toast.makeText(ItemDetails.this, "Chat created", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(ItemDetails.this, "Could not create chat", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                            mDatabase.child("userChats").child(ownerId).child(chatId).child("id").setValue(chatId).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+
+                                        Toast.makeText(ItemDetails.this, "Chat created", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(ItemDetails.this, "Could not create chat", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                            Intent intent = new Intent(ItemDetails.this, DirectMessage.class);
+                            intent.putExtra("chatId", chatId);
+                            intent.putExtra("customerId", userId);
+                            intent.putExtra("ownerId", ownerId);
+                            startActivity(intent);
+                        }
+
+                        else {
+
+                            Toast.makeText(ItemDetails.this, "Could not create chat", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
 

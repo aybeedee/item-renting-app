@@ -660,7 +660,7 @@
             android:background="@color/white"
             android:paddingLeft="15dp"
             android:layout_marginLeft="9dp"
-            android:layout_above="@id/attach_send_bar"/>
+            android:layout_above="@id/attach_send_bar" />
 
         <LinearLayout
             android:id="@+id/attach_send_bar"
@@ -688,14 +688,6 @@
                 android:layout_weight="0.1"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_insert_photo" />
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_gravity="start|center_vertical"
-                android:layout_weight="0.1"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_insert_file" />
 
             <TextView
                 android:layout_width="0dp"
