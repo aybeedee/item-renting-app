@@ -3,8 +3,10 @@ package com.abdullahumer.i200528;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -166,6 +168,42 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             senderImgVH.time.setText(formattedTime);
         }
 
+        else if (holder.getItemViewType() == 2) {
+
+            SenderVidVH senderVidVH = (SenderVidVH) holder;
+
+            String videoUrl = messageList.get(position).getVideoUrl();
+            Long timestamp = messageList.get(position).getTimestamp();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date(timestamp);
+            String formattedTime = simpleDateFormat.format(date);
+
+            Uri uri = Uri.parse(videoUrl);
+            senderVidVH.vid.setVideoURI(uri);
+            senderVidVH.vid.start();
+            senderVidVH.time.setText(formattedTime);
+
+            senderVidVH.vid.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                    if (senderVidVH.vid.isPlaying()) {
+
+                        senderVidVH.vid.pause();
+                    }
+
+                    else {
+
+                        senderVidVH.vid.resume();
+                    }
+
+                    return true;
+                }
+            });
+        }
+
         else if (holder.getItemViewType() == 3) {
 
             ReceiverTextVH receiverTextVH = (ReceiverTextVH) holder;
@@ -236,6 +274,63 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             Picasso.get().load(imageUrl).into(receiverImgVH.img);
             receiverImgVH.time.setText(formattedTime);
+        }
+
+        else {
+
+            ReceiverVidVH receiverVidVH = (ReceiverVidVH) holder;
+
+            String senderId = messageList.get(position).getSenderId();
+            String videoUrl = messageList.get(position).getVideoUrl();
+            Long timestamp = messageList.get(position).getTimestamp();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date(timestamp);
+            String formattedTime = simpleDateFormat.format(date);
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            mDatabase.child("users").child(senderId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                    if (task.isSuccessful()) {
+
+                        User userObject = task.getResult().getValue(User.class);
+                        Picasso.get().load(userObject.getProfilePhotoUrl()).into(receiverVidVH.profilePhoto);
+                    }
+
+                    else {
+
+                        Toast.makeText(context, "Could not fetch user", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            Uri uri = Uri.parse(videoUrl);
+            receiverVidVH.vid.setVideoURI(uri);
+            receiverVidVH.vid.start();
+            receiverVidVH.time.setText(formattedTime);
+
+            receiverVidVH.vid.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                    if (receiverVidVH.vid.isPlaying()) {
+
+                        receiverVidVH.vid.pause();
+                    }
+
+                    else {
+
+                        receiverVidVH.vid.resume();
+                    }
+
+                    return true;
+                }
+            });
         }
     }
 
