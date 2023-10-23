@@ -73,7 +73,6 @@
             android:id="@+id/coverPhoto"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:src="@drawable/clouds"
             android:scaleType="fitXY" />
 
         <LinearLayout
@@ -98,8 +97,7 @@
                 <ImageView
                     android:id="@+id/profilePhoto"
                     android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:src="@drawable/chat_portrait_1" />
+                    android:layout_height="96dp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -119,7 +117,7 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Abdullah"
+            android:text=""
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="start"
@@ -153,7 +151,7 @@
             android:id="@+id/city"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Islamabad"
+            android:text=""
             android:textSize="15sp"
             android:gravity="start"
             android:layout_weight="0.7"
@@ -163,7 +161,7 @@
             android:id="@+id/itemsPosted"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="18 items posted"
+            android:text=""
             android:textSize="15sp"
             android:gravity="end"
             android:layout_weight="1"
@@ -173,7 +171,7 @@
             android:id="@+id/itemsRented"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="24 items rented"
+            android:text=""
             android:textSize="15sp"
             android:gravity="end"
             android:layout_weight="1"

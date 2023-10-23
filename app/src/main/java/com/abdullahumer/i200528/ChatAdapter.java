@@ -32,14 +32,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     List<Chat> chatList;
     Context context;
     String userId;
-    String ownerName;
 
     public ChatAdapter(List<Chat> chatList, Context context, String userId) {
 
         this.chatList = chatList;
         this.context = context;
         this.userId = userId;
-        this.ownerName = "";
     }
 
     @NonNull
@@ -80,8 +78,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                 if (task.isSuccessful()) {
 
                     User userObject = task.getResult().getValue(User.class);
-                    ownerName = userObject.getFullName();
-                    holder.name.setText(ownerName);
+                    holder.name.setText(userObject.getFullName());
                     holder.lastMessage.setText(lastMessage);
                     Picasso.get().load(userObject.getProfilePhotoUrl()).into(holder.picture);
                 }
@@ -102,7 +99,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                 intent.putExtra("chatId", chatId);
                 intent.putExtra("customerId", userId);
                 intent.putExtra("ownerId", ownerId);
-                intent.putExtra("ownerName", ownerName);
                 context.startActivity(intent);
             }
         });

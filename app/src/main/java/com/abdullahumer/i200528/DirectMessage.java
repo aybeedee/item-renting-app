@@ -25,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +37,11 @@ public class DirectMessage extends AppCompatActivity {
     ScrollView chat_messages;
     RecyclerView messagesRV;
     EditText enter_message_bar;
-    TextView send;
+    TextView name, send;
 
     MessageAdapter messageAdapter;
     List<Message> messagesList;
-    String chatId, customerId, ownerId, ownerName, text, imageUrl, videoUrl;
+    String chatId, customerId, ownerId, text, imageUrl, videoUrl, userName;
 
     DatabaseReference mDatabase;
 
@@ -60,12 +62,12 @@ public class DirectMessage extends AppCompatActivity {
         chat_messages = findViewById(R.id.scroll_chat_messages);
         messagesRV = findViewById(R.id.messagesRV);
         enter_message_bar = findViewById(R.id.enter_message_bar);
+        name = findViewById(R.id.name);
         send = findViewById(R.id.send);
 
         chatId = getIntent().getStringExtra("chatId");
         customerId = getIntent().getStringExtra("customerId");
         ownerId = getIntent().getStringExtra("ownerId");
-        ownerName = getIntent().getStringExtra("ownerName");
 
         messagesList = new ArrayList<>();
         messageAdapter = new MessageAdapter(messagesList, DirectMessage.this, customerId);
@@ -74,6 +76,42 @@ public class DirectMessage extends AppCompatActivity {
         messagesRV.setLayoutManager(requestsLM);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child("users").child(customerId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                if (task.isSuccessful()) {
+
+                    User userObject = task.getResult().getValue(User.class);
+                    userName = userObject.getFullName();
+                }
+
+                else {
+
+                    Toast.makeText(DirectMessage.this, "Could not fetch user", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        mDatabase.child("users").child(ownerId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                if (task.isSuccessful()) {
+
+                    User userObject = task.getResult().getValue(User.class);
+                    name.setText(userObject.getFullName());
+                }
+
+                else {
+
+                    Toast.makeText(DirectMessage.this, "Could not fetch owner", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         mDatabase.child("messages").addChildEventListener(new ChildEventListener() {
 
@@ -84,6 +122,7 @@ public class DirectMessage extends AppCompatActivity {
 
                 messagesList.add(messageObject);
                 messageAdapter.notifyDataSetChanged();
+                messagesRV.scrollToPosition(messagesList.size() - 1);
             }
 
             @Override
@@ -143,19 +182,19 @@ public class DirectMessage extends AppCompatActivity {
 
                                 if (imageUrl.equals("")) {
 
-                                    lastMessage = ownerName.substring(0, ownerName.indexOf(' ')) + " sent a video";
+                                    lastMessage = userName.substring(0, userName.indexOf(' ')) + " sent a video";
                                 }
 
                                 else {
 
-                                    lastMessage = ownerName.substring(0, ownerName.indexOf(' ')) + " sent a photo";
+                                    lastMessage = userName.substring(0, userName.indexOf(' ')) + " sent a photo";
                                 }
                             }
 
                             else {
 
-                                String lastMessageTemp = (ownerName.substring(0, ownerName.indexOf(' ')) + ": " + text);
-                                lastMessage = lastMessageTemp.substring(0, Math.min(lastMessageTemp.length(), 24));
+                                String lastMessageTemp = (userName.substring(0, userName.indexOf(' ')) + ": " + text);
+                                lastMessage = lastMessageTemp.substring(0, Math.min(lastMessageTemp.length(), 36));
                             }
 
                             mDatabase.child("chats").child(chatId).child("lastMessage").setValue(lastMessage);

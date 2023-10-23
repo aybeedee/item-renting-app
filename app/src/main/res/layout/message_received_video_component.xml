@@ -20,8 +20,7 @@
         <ImageView
             android:id="@+id/profilePhoto"
             android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:src="@drawable/chat_portrait_1" />
+            android:layout_height="26dp" />
 
     </androidx.cardview.widget.CardView>
 

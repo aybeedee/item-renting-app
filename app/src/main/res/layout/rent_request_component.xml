@@ -23,7 +23,7 @@
                 android:id="@+id/itemName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Renting Hours"
+                android:text=""
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary_grey_1"
@@ -48,7 +48,7 @@
                     android:id="@+id/hours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Renting Hours"
+                    android:text=""
                     android:textSize="17sp"
                     android:textColor="@color/primary_orange"
                     android:layout_marginBottom="5dp" />
@@ -73,7 +73,7 @@
                     android:id="@+id/customerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Renting Hours"
+                    android:text=""
                     android:textSize="17sp"
                     android:textColor="@color/primary_grey_1"
                     android:layout_marginBottom="5dp" />

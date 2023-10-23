@@ -30,7 +30,6 @@
             android:id="@+id/img"
             android:layout_width="175dp"
             android:layout_height="175dp"
-            android:src="@drawable/sole_f63_treadmill"
             android:scaleType="fitXY"/>
 
     </androidx.cardview.widget.CardView>

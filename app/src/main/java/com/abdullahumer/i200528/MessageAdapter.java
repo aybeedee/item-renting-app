@@ -3,6 +3,7 @@ package com.abdullahumer.i200528;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,22 +51,22 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         else if (viewType == 1) {
 
-            return new SenderTextVH(LayoutInflater.from(context).inflate(R.layout.message_sent_img_component, parent, false));
+            return new SenderImgVH(LayoutInflater.from(context).inflate(R.layout.message_sent_img_component, parent, false));
         }
 
         else if (viewType == 2) {
 
-            return new ReceiverVidVH(LayoutInflater.from(context).inflate(R.layout.message_sent_vid_component, parent, false));
+            return new SenderVidVH(LayoutInflater.from(context).inflate(R.layout.message_sent_vid_component, parent, false));
         }
 
         else if (viewType == 3) {
 
-            return new ReceiverVidVH(LayoutInflater.from(context).inflate(R.layout.message_received_component, parent, false));
+            return new ReceiverTextVH(LayoutInflater.from(context).inflate(R.layout.message_received_component, parent, false));
         }
 
         else if (viewType == 4) {
 
-            return new ReceiverVidVH(LayoutInflater.from(context).inflate(R.layout.message_received_img_component, parent, false));
+            return new ReceiverImgVH(LayoutInflater.from(context).inflate(R.layout.message_received_img_component, parent, false));
         }
 
         return new ReceiverVidVH(LayoutInflater.from(context).inflate(R.layout.message_received_video_component, parent, false));
@@ -150,57 +151,42 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
 
-//        String chatId = chatList.get(position).getChatId();
-//        String lastMessage = chatList.get(position).getLastMessage();
-//        String firstMemberId = chatList.get(position).getFirstMemberId();
-//        String secondMemberId = chatList.get(position).getSecondMemberId();
-//
-//        String ownerId;
-//
-//        if (userId.equals(firstMemberId)) {
-//
-//            ownerId = secondMemberId;
-//        }
-//
-//        else {
-//
-//            ownerId = firstMemberId;
-//        }
-//
-//        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-//
-//        mDatabase.child("users").child(ownerId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-//
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task) {
-//
-//                if (task.isSuccessful()) {
-//
-//                    User userObject = task.getResult().getValue(User.class);
-//                    holder.name.setText(userObject.getFullName());
-//                    holder.lastMessage.setText(lastMessage);
-//                    Picasso.get().load(userObject.getProfilePhotoUrl()).into(holder.picture);
-//                }
-//
-//                else {
-//
-//                    Toast.makeText(context, "Could not fetch customer", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-//
-//        holder.chatItem.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent intent = new Intent(context, DirectMessage.class);
-//                intent.putExtra("chatId", chatId);
-//                intent.putExtra("customerId", userId);
-//                intent.putExtra("ownerId", ownerId);
-//                context.startActivity(intent);
-//            }
-//        });
+        else if (holder.getItemViewType() == 3) {
+
+            ReceiverTextVH receiverTextVH = (ReceiverTextVH) holder;
+
+            String messageId = messageList.get(position).getMessageId();
+            String senderId = messageList.get(position).getSenderId();
+            String text = messageList.get(position).getText();
+            Long timestamp = messageList.get(position).getTimestamp();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date(timestamp);
+            String formattedTime = simpleDateFormat.format(date);
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            mDatabase.child("users").child(senderId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                    if (task.isSuccessful()) {
+
+                        User userObject = task.getResult().getValue(User.class);
+                        Picasso.get().load(userObject.getProfilePhotoUrl()).into(receiverTextVH.profilePhoto);
+                    }
+
+                    else {
+
+                        Toast.makeText(context, "Could not fetch user", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            receiverTextVH.text.setText(text);
+            receiverTextVH.time.setText(formattedTime);
+        }
     }
 
     @Override
