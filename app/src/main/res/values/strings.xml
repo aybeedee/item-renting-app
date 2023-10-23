@@ -24,7 +24,6 @@
 
     <string-array name="filters_array">
         <item>Best Match</item>
-        <item>Most Recent</item>
         <item>Low to High</item>
         <item>High to Low</item>
     </string-array>
