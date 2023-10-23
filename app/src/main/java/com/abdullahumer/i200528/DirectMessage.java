@@ -39,7 +39,7 @@ public class DirectMessage extends AppCompatActivity {
 
     MessageAdapter messageAdapter;
     List<Message> messagesList;
-    String chatId, customerId, ownerId, text, imageUrl, videoUrl;
+    String chatId, customerId, ownerId, ownerName, text, imageUrl, videoUrl;
 
     DatabaseReference mDatabase;
 
@@ -65,6 +65,7 @@ public class DirectMessage extends AppCompatActivity {
         chatId = getIntent().getStringExtra("chatId");
         customerId = getIntent().getStringExtra("customerId");
         ownerId = getIntent().getStringExtra("ownerId");
+        ownerName = getIntent().getStringExtra("ownerName");
 
         messagesList = new ArrayList<>();
         messageAdapter = new MessageAdapter(messagesList, DirectMessage.this, customerId);
@@ -135,6 +136,29 @@ public class DirectMessage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
 
                         if (task.isSuccessful()) {
+
+                            String lastMessage;
+
+                            if (text.equals("")) {
+
+                                if (imageUrl.equals("")) {
+
+                                    lastMessage = ownerName.substring(0, ownerName.indexOf(' ')) + " sent a video";
+                                }
+
+                                else {
+
+                                    lastMessage = ownerName.substring(0, ownerName.indexOf(' ')) + " sent a photo";
+                                }
+                            }
+
+                            else {
+
+                                String lastMessageTemp = (ownerName.substring(0, ownerName.indexOf(' ')) + ": " + text);
+                                lastMessage = lastMessageTemp.substring(0, Math.min(lastMessageTemp.length(), 24));
+                            }
+
+                            mDatabase.child("chats").child(chatId).child("lastMessage").setValue(lastMessage);
 
                             text = "";
                             imageUrl = "";

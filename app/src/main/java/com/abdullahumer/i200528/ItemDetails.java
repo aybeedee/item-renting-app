@@ -31,7 +31,7 @@ public class ItemDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
-    String userId, itemId, ownerId, dateString, cityString, rateString, itemNameString, imageUrlString;
+    String userId, itemId, ownerId, dateString, cityString, rateString, itemNameString, imageUrlString, ownerNameString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +110,8 @@ public class ItemDetails extends AppCompatActivity {
                             if (task.isSuccessful()) {
 
                                 User ownerObject = task.getResult().getValue(User.class);
-                                ownerName.setText(ownerObject.getFullName());
+                                ownerNameString = ownerObject.getFullName();
+                                ownerName.setText(ownerNameString);
                                 Picasso.get().load(ownerObject.getProfilePhotoUrl()).into(ownerImg);
 
                                 mDatabase.child("userRents").child(ownerId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -213,6 +214,7 @@ public class ItemDetails extends AppCompatActivity {
                             intent.putExtra("chatId", chatId);
                             intent.putExtra("customerId", userId);
                             intent.putExtra("ownerId", ownerId);
+                            intent.putExtra("ownerName", ownerNameString);
                             startActivity(intent);
                         }
 
