@@ -52,7 +52,6 @@ public class PostItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_item);
 
-//        Date date = Calendar.getInstance().getTime();
         Calendar calendar = Calendar.getInstance();
         day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
         month = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH);
