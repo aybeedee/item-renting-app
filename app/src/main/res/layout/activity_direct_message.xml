@@ -133,7 +133,7 @@
             android:paddingRight="20dp">
 
             <ImageView
-                android:id="@+id/image_take_picture"
+                android:id="@+id/takePhoto"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="start|center_vertical"
@@ -142,6 +142,7 @@
                 android:src="@drawable/ic_camera" />
 
             <ImageView
+                android:id="@+id/insertPhoto"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="start|center_vertical"
@@ -150,6 +151,7 @@
                 android:src="@drawable/ic_insert_photo" />
 
             <ImageView
+                android:id="@+id/insertVideo"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="start|center_vertical"

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.Voice;
 import android.util.Log;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -26,15 +29,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class DirectMessage extends AppCompatActivity {
 
-    ImageView back_chat, take_picture, video_call, voice_call;
-    ScrollView chat_messages;
+    ImageView back_chat, takePhoto, insertPhoto, insertVideo, video_call, voice_call;
     RecyclerView messagesRV;
     EditText enter_message_bar;
     TextView name, send;
@@ -56,10 +62,11 @@ public class DirectMessage extends AppCompatActivity {
         videoUrl = "";
 
         back_chat = findViewById(R.id.image_back_chat);
-        take_picture = findViewById(R.id.image_take_picture);
+        takePhoto = findViewById(R.id.takePhoto);
+        insertPhoto = findViewById(R.id.insertPhoto);
+        insertVideo = findViewById(R.id.insertVideo);
         video_call = findViewById(R.id.image_video_call);
         voice_call = findViewById(R.id.image_voice_call);
-        chat_messages = findViewById(R.id.scroll_chat_messages);
         messagesRV = findViewById(R.id.messagesRV);
         enter_message_bar = findViewById(R.id.enter_message_bar);
         name = findViewById(R.id.name);
@@ -217,18 +224,43 @@ public class DirectMessage extends AppCompatActivity {
             }
         });
 
+        insertPhoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 105);
+            }
+        });
+
+        insertVideo.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 106);
+            }
+        });
+
         back_chat.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
+                setResult(RESULT_CANCELED);
                 Intent intent = new Intent(DirectMessage.this, MainActivity.class);
                 startActivity(intent);
 
             }
         });
 
-        take_picture.setOnClickListener(new View.OnClickListener() {
+        takePhoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -260,14 +292,71 @@ public class DirectMessage extends AppCompatActivity {
 
             }
         });
+    }
 
-        chat_messages.postDelayed(new Runnable() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 105 && resultCode == RESULT_OK) {
+            Uri image = data.getData();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child(customerId + Calendar.getInstance().getTimeInMillis() + "-message-img.png");
+            storageRef.putFile(image)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-            @Override
-            public void run() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                chat_messages.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        },0);
+                            Task<Uri> task = taskSnapshot.getStorage().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    imageUrl = uri.toString();
+                                    Toast.makeText(DirectMessage.this, "Image Ready to Send", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(DirectMessage.this, e.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+        else if (requestCode == 106 && resultCode == RESULT_OK) {
+            Uri video = data.getData();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child(customerId + Calendar.getInstance().getTimeInMillis() + "-item-video.mp4");
+            storageRef.putFile(video)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            Task<Uri> task = taskSnapshot.getStorage().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    videoUrl = uri.toString();
+                                    Toast.makeText(DirectMessage.this, "Video Ready to Send", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(DirectMessage.this, e.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
     }
 }

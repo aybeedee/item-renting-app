@@ -151,11 +151,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
 
+        else if (holder.getItemViewType() == 1) {
+
+            SenderImgVH senderImgVH = (SenderImgVH) holder;
+
+            String imageUrl = messageList.get(position).getImageUrl();
+            Long timestamp = messageList.get(position).getTimestamp();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date(timestamp);
+            String formattedTime = simpleDateFormat.format(date);
+
+            Picasso.get().load(imageUrl).into(senderImgVH.img);
+            senderImgVH.time.setText(formattedTime);
+        }
+
         else if (holder.getItemViewType() == 3) {
 
             ReceiverTextVH receiverTextVH = (ReceiverTextVH) holder;
 
-            String messageId = messageList.get(position).getMessageId();
             String senderId = messageList.get(position).getSenderId();
             String text = messageList.get(position).getText();
             Long timestamp = messageList.get(position).getTimestamp();
@@ -186,6 +200,42 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             receiverTextVH.text.setText(text);
             receiverTextVH.time.setText(formattedTime);
+        }
+
+        else if (holder.getItemViewType() == 4) {
+
+            ReceiverImgVH receiverImgVH = (ReceiverImgVH) holder;
+
+            String senderId = messageList.get(position).getSenderId();
+            String imageUrl = messageList.get(position).getImageUrl();
+            Long timestamp = messageList.get(position).getTimestamp();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date(timestamp);
+            String formattedTime = simpleDateFormat.format(date);
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            mDatabase.child("users").child(senderId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                    if (task.isSuccessful()) {
+
+                        User userObject = task.getResult().getValue(User.class);
+                        Picasso.get().load(userObject.getProfilePhotoUrl()).into(receiverImgVH.profilePhoto);
+                    }
+
+                    else {
+
+                        Toast.makeText(context, "Could not fetch user", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            Picasso.get().load(imageUrl).into(receiverImgVH.img);
+            receiverImgVH.time.setText(formattedTime);
         }
     }
 
