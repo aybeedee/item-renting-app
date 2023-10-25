@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -17,7 +20,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.abdullahumer.i200528.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
 //        navb = findViewById(R.id.bottomNavigationView);
 //
 //        navb.setOnItemSelectedListener(item -> {
@@ -102,6 +108,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
+
+        getFCMToken();
+    }
+
+    void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+
+                if (task.isSuccessful()) {
+
+                    String token = task.getResult();
+                    Log.d("Token", token);
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                    mDatabase.child("users").child(mAuth.getUid().toString()).child("fcmToken").setValue(token);
+                }
+            }
+        });
     }
 
     private void replaceFrag(Fragment fragment) {

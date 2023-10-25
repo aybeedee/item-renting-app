@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -313,14 +314,33 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                mAuth = FirebaseAuth.getInstance();
+//                mAuth = FirebaseAuth.getInstance();
+//
+//                mAuth.signOut();
+//
+//                Intent intent = new Intent(getActivity(), Login.class);
+//                startActivity(intent);
+//
+//                getActivity().finish();
 
-                mAuth.signOut();
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
 
-                Intent intent = new Intent(getActivity(), Login.class);
-                startActivity(intent);
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                getActivity().finish();
+                        if (task.isSuccessful()) {
+
+                            mAuth = FirebaseAuth.getInstance();
+
+                            mAuth.signOut();
+
+                            Intent intent = new Intent(getActivity(), Login.class);
+                            startActivity(intent);
+
+                            getActivity().finish();
+                        }
+                    }
+                });
             }
         });
 

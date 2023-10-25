@@ -10,6 +10,7 @@ public class User {
     String city;
     String profilePhotoUrl;
     String coverPhotoUrl;
+    String fcmToken;
 
     public User() {}
 
@@ -86,5 +87,13 @@ public class User {
 
     public void setCoverPhotoUrl(String coverPhotoUrl) {
         this.coverPhotoUrl = coverPhotoUrl;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

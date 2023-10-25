@@ -34,9 +34,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DirectMessage extends AppCompatActivity {
 
@@ -47,7 +58,7 @@ public class DirectMessage extends AppCompatActivity {
 
     MessageAdapter messageAdapter;
     List<Message> messagesList;
-    String chatId, customerId, ownerId, text, imageUrl, videoUrl, userName;
+    String chatId, customerId, ownerId, ownerFCMToken, text, imageUrl, videoUrl, userName;
 
     DatabaseReference mDatabase;
 
@@ -110,6 +121,7 @@ public class DirectMessage extends AppCompatActivity {
                 if (task.isSuccessful()) {
 
                     User userObject = task.getResult().getValue(User.class);
+                    ownerFCMToken = userObject.getFcmToken();
                     name.setText(userObject.getFullName());
                 }
 
@@ -202,6 +214,8 @@ public class DirectMessage extends AppCompatActivity {
 
                                 String lastMessageTemp = (userName.substring(0, userName.indexOf(' ')) + ": " + text);
                                 lastMessage = lastMessageTemp.substring(0, Math.min(lastMessageTemp.length(), 36));
+
+                                sendNotification(text);
                             }
 
                             mDatabase.child("chats").child(chatId).child("lastMessage").setValue(lastMessage);
@@ -289,6 +303,54 @@ public class DirectMessage extends AppCompatActivity {
 
                 Intent intent = new Intent(DirectMessage.this, VoiceCall.class);
                 startActivity(intent);
+
+            }
+        });
+    }
+
+    void sendNotification(String message) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject notificationObject = new JSONObject();
+            notificationObject.put("title", userName);
+            notificationObject.put("body", message);
+
+            jsonObject.put("notification", notificationObject);
+            jsonObject.put("to", ownerFCMToken);
+
+            callAPI(jsonObject);
+        }
+
+        catch (Exception e) {
+
+
+        }
+    }
+
+    void callAPI(JSONObject jsonObject) {
+
+        MediaType JSON = MediaType.get("application/json");
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
+        okhttp3.Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization", "Bearer AAAA1PgJxtk:APA91bGmckdwfkEFtT6as6mtfI02hznAu_kxbOOW2hcCgwh6-D7woRG5BRQDwrHO5pSbKvMJf4ByyOXm4ZIiom-YdYp5Bbc6ujAfWj6eDDx-ubMKoWRDSNtDRfgiSUKcc6LfrzML5gVB")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
 
             }
         });
