@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.abdullahumer.i200528.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 //        navb = findViewById(R.id.bottomNavigationView);
 //
 //        navb.setOnItemSelectedListener(item -> {
