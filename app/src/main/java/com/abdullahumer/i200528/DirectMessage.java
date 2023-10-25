@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.accessibilityservice.AccessibilityService;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.screenshotdetection.ScreenshotDetectionDelegate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,7 +52,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class DirectMessage extends AppCompatActivity {
+public class DirectMessage extends ScreenshotDetectionActivity {
 
     ImageView back_chat, takePhoto, insertPhoto, insertVideo, video_call, voice_call;
     RecyclerView messagesRV;
@@ -308,6 +311,18 @@ public class DirectMessage extends AppCompatActivity {
         });
     }
 
+    public void onScreenCaptured(String path) {
+//        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        // Do something when the screen was captured
+        sendNotification("Took a screenshot of your chat!");
+    }
+
+    @Override
+    public void onScreenCapturedWithDeniedPermission() {
+        Toast.makeText(this, "Please grant read external storage permission for screenshot detection", Toast.LENGTH_SHORT).show();
+        // Do something when the screen was captured but read external storage permission has been denied
+    }
+
     void sendNotification(String message) {
 
         JSONObject jsonObject = new JSONObject();
@@ -421,4 +436,6 @@ public class DirectMessage extends AppCompatActivity {
         super.onBackPressed();
         setResult(RESULT_CANCELED);
     }
+
+
 }
